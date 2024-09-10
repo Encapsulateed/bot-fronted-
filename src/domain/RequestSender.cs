@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Requests;
@@ -68,7 +69,6 @@ namespace front_bot.src.domain
         {
             string route = Environment.GetEnvironmentVariable("BOTS_BASE_ROUTE")! + "bots";
 
-            // string jsonContent = JsonConvert.SerializeObject(json);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
 
@@ -84,7 +84,24 @@ namespace front_bot.src.domain
 
             return ((int)response.StatusCode, responseBody);
 
+        }
 
+
+        public static async Task<(int,string?)> GetUserBots(src.repository.User usr)
+        {
+            string route = Environment.GetEnvironmentVariable("BOTS_BASE_ROUTE")! + "bots";
+
+            using HttpClient client = new HttpClient();
+
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", usr.Jwt);
+
+            HttpResponseMessage response = await client.GetAsync(route);
+
+            string? responseBody = await response.Content.ReadAsStringAsync();
+
+
+            return ((int)response.StatusCode, responseBody);
 
         }
     }

@@ -48,6 +48,26 @@ namespace front_bot
                     }
                 case "/mybots":
                     {
+                        var data = await RequestSender.GetUserBots(src.repository.User.Get(userId));
+
+                        if (data.Item1 == 200 )
+                        {
+                            if (data.Item2 == string.Empty || data.Item2 =="")
+                            {
+                                await _bot.SendTextMessageAsync(userId, "У вас нет ещё ни одного бота");
+                            }
+                            else
+                            {
+                                var keyborard = MessageGenerator.GenerateBotsKeyBoard(data.Item2!);
+                                await _bot.SendTextMessageAsync(userId, "Выберите бота", replyMarkup: keyborard);
+
+
+                            }
+                        }
+                        else
+                        {
+                            await ShowRequestData(data, userId);
+                        }
 
                         return;
                     }
