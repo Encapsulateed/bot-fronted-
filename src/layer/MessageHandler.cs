@@ -52,7 +52,7 @@ namespace front_bot
 
                         if (data.Item1 == 200 )
                         {
-                            if (data.Item2 == string.Empty || data.Item2 =="")
+                            if (data.Item2 == string.Empty || data.Item2 == "")
                             {
                                 await _bot.SendTextMessageAsync(userId, "У вас нет ещё ни одного бота");
                             }
@@ -60,8 +60,6 @@ namespace front_bot
                             {
                                 var keyborard = MessageGenerator.GenerateBotsKeyBoard(data.Item2!);
                                 await _bot.SendTextMessageAsync(userId, "Выберите бота", replyMarkup: keyborard);
-
-
                             }
                         }
                         else
@@ -191,7 +189,7 @@ namespace front_bot
                                 string jsonContent = await reader.ReadToEndAsync();
                                 Console.WriteLine(jsonContent);
 
-                               var data = await RequestSender.SendCreateBotRequest(usr,jsonContent);
+                                var data = await RequestSender.SendCreateBotRequest(usr,jsonContent);
                                 await ShowRequestData(data, userId);
                             }
                         }
@@ -208,7 +206,7 @@ namespace front_bot
         private static async Task ShowRequestData((int,string?) data,long user_id) 
         {
             int code = data.Item1;
-            string? reason = data.Item2; 
+            string? reason = (string)JObject.Parse(data.Item2)["message"]; 
             switch (code) 
             {
                 case 200:
@@ -221,12 +219,7 @@ namespace front_bot
                         await _bot.SendTextMessageAsync(chatId: user_id, text: "Успешно создано!");
                         return;
                     }
-                case 400:
-                    {
-                        await _bot.SendTextMessageAsync(chatId: user_id, text: $"Ошибка {reason}");
-                        return;
-                    }
-                case 404:
+                default:
                     {
                         await _bot.SendTextMessageAsync(chatId: user_id, text: $"Ошибка {reason}");
                         return;

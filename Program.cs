@@ -42,7 +42,7 @@ namespace front_bot
         {
             try
             {
-                Console.WriteLine(update);
+                Logger(update);
                 switch (update.Type)
                 {
                     case UpdateType.Message:
@@ -53,6 +53,9 @@ namespace front_bot
                     case UpdateType.CallbackQuery: 
                         {
                             await HandleCallBack(update.CallbackQuery);
+                            await _bot.DeleteMessageAsync(update.CallbackQuery.From.Id, update.CallbackQuery.Message.MessageId);
+
+
                             return;
 
                         }
@@ -78,6 +81,25 @@ namespace front_bot
 
             Console.WriteLine(ErrorMessage);
             return Task.CompletedTask;
+        }
+
+
+        private static void Logger(Update update)
+        {
+            Console.WriteLine(DateTime.Now.ToShortTimeString());
+            Console.WriteLine($"{update.Type}\n");
+            if (update.Type == UpdateType.Message)
+            {
+                if (string.IsNullOrEmpty(update.Message.Text) == false)
+                    Console.WriteLine($"Message: {update.Message.Text}\nFrom: {update.Message.From.Id}\nLink @{update.Message.From.Username}");
+
+            }
+            else
+            {
+                Console.WriteLine($"Querry: {update.CallbackQuery.Data}\nText: {update.CallbackQuery.Message.Text}\nFrom: {update.CallbackQuery.From.Id}\n" +
+                    $"Link @{update.CallbackQuery.From.Username}");
+            }
+            Console.WriteLine();
         }
     }
 }

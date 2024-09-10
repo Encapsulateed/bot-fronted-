@@ -80,7 +80,6 @@ namespace front_bot.src.domain
 
             string? responseBody = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine(responseBody);
 
             return ((int)response.StatusCode, responseBody);
 
@@ -90,6 +89,77 @@ namespace front_bot.src.domain
         public static async Task<(int,string?)> GetUserBots(src.repository.User usr)
         {
             string route = Environment.GetEnvironmentVariable("BOTS_BASE_ROUTE")! + "bots";
+
+            using HttpClient client = new HttpClient();
+
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", usr.Jwt);
+
+            HttpResponseMessage response = await client.GetAsync(route);
+
+            string? responseBody = await response.Content.ReadAsStringAsync();
+
+
+            return ((int)response.StatusCode, responseBody);
+
+        }
+
+        public static async Task<(int,string?)> GetBot(src.repository.User usr,string uuid)
+        {
+    
+            string route = Environment.GetEnvironmentVariable("BOTS_BASE_ROUTE")! + "bots/" + uuid;
+
+            using HttpClient client = new HttpClient();
+
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", usr.Jwt);
+
+            HttpResponseMessage response = await client.GetAsync(route);
+
+            string? responseBody = await response.Content.ReadAsStringAsync();
+
+
+            return ((int)response.StatusCode, responseBody);
+
+        }
+
+        public static async Task<(int, string?)> TurnON(src.repository.User usr, string bot_uuid)
+        {
+            string route = Environment.GetEnvironmentVariable("BOTS_BASE_ROUTE")! + "bots/" + bot_uuid + "/start";
+
+            using HttpClient client = new HttpClient();
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", usr.Jwt);
+
+            HttpResponseMessage response = await client.PostAsync(route,null);
+
+            string? responseBody = await response.Content.ReadAsStringAsync();
+
+
+            return ((int)response.StatusCode, responseBody);
+
+        }
+        public static async Task<(int, string?)> TurnOFF(src.repository.User usr, string bot_uuid)
+        {
+            string route = Environment.GetEnvironmentVariable("BOTS_BASE_ROUTE")! + "bots/" + bot_uuid + "/stop";
+
+            using HttpClient client = new HttpClient();
+
+
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", usr.Jwt);
+
+            HttpResponseMessage response = await client.PostAsync(route, null);
+
+            string? responseBody = await response.Content.ReadAsStringAsync();
+
+
+            return ((int)response.StatusCode, responseBody);
+
+        }
+
+        public static async Task<(int, string?)> GET_CSV(src.repository.User usr, string bot_uuid)
+        {
+            string route = Environment.GetEnvironmentVariable("BOTS_BASE_ROUTE")! + "bots/" + bot_uuid + "/answers";
 
             using HttpClient client = new HttpClient();
 
