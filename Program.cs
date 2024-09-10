@@ -38,15 +38,16 @@ namespace front_bot
 
             await Task.Delay(-1);
         }
-        private static async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        private static async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cts)
         {
             try
             {
+                Console.WriteLine(update);
                 switch (update.Type)
                 {
                     case UpdateType.Message:
                         {
-                            await HandleMessage(update.Message);
+                            await HandleMessage(update.Message,cts);
                             return;
                         }
                     case UpdateType.CallbackQuery: 
@@ -55,6 +56,7 @@ namespace front_bot
                             return;
 
                         }
+                    
                     default:
                         throw new Exception("Unsupported update type!");
                 }
