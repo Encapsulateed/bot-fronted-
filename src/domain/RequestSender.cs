@@ -31,7 +31,7 @@ namespace front_bot.src.domain
             using HttpClient client = new HttpClient();
             HttpResponseMessage response = await client.PostAsync(route, content);
 
-            string? responseBody = await response.Content.ReadAsStringAsync();
+            string? responseBody = await response.Content.ReadAsStringAsync() ?? null;
 
             Console.WriteLine(responseBody);
 
@@ -58,8 +58,8 @@ namespace front_bot.src.domain
 
             HttpResponseMessage response = await client.PostAsync(route, content);
 
-            string? responseBody = await response.Content.ReadAsStringAsync();
-            
+            string? responseBody = await response.Content.ReadAsStringAsync() ?? null;
+
             Console.WriteLine(responseBody);
 
             return ((int)response.StatusCode, responseBody);
@@ -76,15 +76,14 @@ namespace front_bot.src.domain
 
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", usr.Jwt);
 
-            HttpResponseMessage response = await client.PostAsync(route, content);
+            HttpResponseMessage response = await client.PutAsync(route, content);
 
-            string? responseBody = await response.Content.ReadAsStringAsync();
+            string? responseBody = await response.Content.ReadAsStringAsync() ?? null;
 
 
             return ((int)response.StatusCode, responseBody);
 
         }
-
 
         public static async Task<(int,string?)> GetUserBots(src.repository.User usr)
         {
@@ -97,7 +96,7 @@ namespace front_bot.src.domain
 
             HttpResponseMessage response = await client.GetAsync(route);
 
-            string? responseBody = await response.Content.ReadAsStringAsync();
+            string? responseBody = await response.Content.ReadAsStringAsync() ?? null;
 
 
             return ((int)response.StatusCode, responseBody);
@@ -116,13 +115,12 @@ namespace front_bot.src.domain
 
             HttpResponseMessage response = await client.GetAsync(route);
 
-            string? responseBody = await response.Content.ReadAsStringAsync();
+            string? responseBody = await response.Content.ReadAsStringAsync() ?? null;
 
 
             return ((int)response.StatusCode, responseBody);
 
         }
-
         public static async Task<(int, string?)> TurnON(src.repository.User usr, string bot_uuid)
         {
             string route = Environment.GetEnvironmentVariable("BOTS_BASE_ROUTE")! + "bots/" + bot_uuid + "/start";
@@ -133,7 +131,7 @@ namespace front_bot.src.domain
 
             HttpResponseMessage response = await client.PostAsync(route,null);
 
-            string? responseBody = await response.Content.ReadAsStringAsync();
+            string? responseBody = await response.Content.ReadAsStringAsync() ?? null;
 
 
             return ((int)response.StatusCode, responseBody);
@@ -150,13 +148,12 @@ namespace front_bot.src.domain
 
             HttpResponseMessage response = await client.PostAsync(route, null);
 
-            string? responseBody = await response.Content.ReadAsStringAsync();
+            string? responseBody = await response.Content.ReadAsStringAsync() ?? null;
 
 
             return ((int)response.StatusCode, responseBody);
 
         }
-
         public static async Task<(int, string?)> GET_CSV(src.repository.User usr, string bot_uuid)
         {
             string route = Environment.GetEnvironmentVariable("BOTS_BASE_ROUTE")! + "bots/" + bot_uuid + "/answers";
@@ -168,11 +165,13 @@ namespace front_bot.src.domain
 
             HttpResponseMessage response = await client.GetAsync(route);
 
-            string? responseBody = await response.Content.ReadAsStringAsync();
+            string? responseBody = await response.Content.ReadAsStringAsync() ?? null;
 
 
             return ((int)response.StatusCode, responseBody);
 
         }
+    
+        
     }
 }

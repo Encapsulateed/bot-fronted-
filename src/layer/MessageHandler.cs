@@ -30,6 +30,7 @@ namespace front_bot
                 case MessageType.Document: 
                     {
                         await HandleUserFile(msg.From.Id, msg.Document);
+                        Console.WriteLine(msg.Document.FileId);
                         return;
                     }
             }
@@ -128,14 +129,24 @@ namespace front_bot
                         usr.Password = text;
                         usr.Command = "";
                         await usr.Update();
-                        
+    
+
                         switch (commands[1])
                         {
                             case "reg":
                                 {
-                                    var result = await RequestSender.SendRegisterRequest(usr);
+                                
+                                    try
+                                    {
+                                        var result = await RequestSender.SendRegisterRequest(usr);
+                                        ShowRequestData(result, userId);
 
-                                    ShowRequestData(result, userId);
+                                    }
+                                    catch (Exception)
+                                    {
+
+                                        await _bot.SendTextMessageAsync(userId, "Успешно!");
+                                    }
                                     return;
                                 }
                             case "auth":
@@ -205,8 +216,10 @@ namespace front_bot
 
         private static async Task ShowRequestData((int,string?) data,long user_id) 
         {
+            Console.WriteLine("status code: " + data.Item1.ToString());
+
             int code = data.Item1;
-            string? reason = (string)JObject.Parse(data.Item2)["message"]; 
+            
             switch (code) 
             {
                 case 200:
@@ -221,6 +234,16 @@ namespace front_bot
                     }
                 default:
                     {
+                        string reason = "";
+                        try
+                        {
+                             reason = (string?)JObject.Parse(data.Item2)["message"] ?? null;
+
+                        }
+                        catch (Exception)
+                        {
+                        }
+
                         await _bot.SendTextMessageAsync(chatId: user_id, text: $"Ошибка {reason}");
                         return;
                     }

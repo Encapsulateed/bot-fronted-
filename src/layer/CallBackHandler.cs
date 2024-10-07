@@ -76,7 +76,7 @@ namespace front_bot
                         }
                     case "stop":
                         {
-                            var data = await RequestSender.TurnON(usr, bot_uuid);
+                            var data = await RequestSender.TurnOFF(usr, bot_uuid);
                             await ShowRequestData(data, usr.ChatId);
 
                             return;
@@ -108,7 +108,7 @@ namespace front_bot
                     await _bot.SendDocumentAsync(chatId: usr.ChatId, document: file, caption: "Ответы участников");
                 }
                 else
-                {
+                { 
                     await ShowRequestData(data,usr.ChatId);
                 }
             }
